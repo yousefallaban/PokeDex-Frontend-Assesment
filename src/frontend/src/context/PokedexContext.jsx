@@ -8,7 +8,7 @@ export function PokedexProvider({ children, initialState }) {
   const [isLoading, setIsLoading] = useState(!initialState);
   const [error, setError] = useState(initialState?.error ?? null);
 
-  const refreshPokedex = useCallback(async () => {
+  const fetchPokedex = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
@@ -22,10 +22,8 @@ export function PokedexProvider({ children, initialState }) {
   }, []);
 
   useEffect(() => {
-    if (!initialState) {
-      refreshPokedex();
-    }
-  }, [initialState, refreshPokedex]);
+    if (!initialState) fetchPokedex();
+  }, [initialState, fetchPokedex]);
 
   const isCaught = useCallback(
     (id) => caughtPokemon.some((p) => p.id === id),
@@ -35,8 +33,8 @@ export function PokedexProvider({ children, initialState }) {
   const catchPokemon = useCallback(async (id) => {
     setError(null);
     try {
-      const caught = await pokemonApi.catchPokemon(id);
-      setCaughtPokemon((prev) => [...prev, caught]);
+      const data = await pokemonApi.catchPokemon(id);
+      setCaughtPokemon((prev) => [...prev, data]);
     } catch (err) {
       setError(err.message);
     }
@@ -52,17 +50,17 @@ export function PokedexProvider({ children, initialState }) {
     }
   }, []);
 
+  const togglePokemon = useCallback(async (id) => {
+    if (isCaught(id)) {
+      await releasePokemon(id);
+    } else {
+      await catchPokemon(id);
+    }
+  }, [isCaught, catchPokemon, releasePokemon]);
+
   const value = useMemo(
-    () => ({
-      caughtPokemon,
-      isCaught,
-      catchPokemon,
-      releasePokemon,
-      isLoading,
-      error,
-      refreshPokedex,
-    }),
-    [caughtPokemon, isCaught, catchPokemon, releasePokemon, isLoading, error, refreshPokedex]
+    () => ({ caughtPokemon, isCaught, catchPokemon, releasePokemon, togglePokemon, isLoading, error, fetchPokedex }),
+    [caughtPokemon, isCaught, catchPokemon, releasePokemon, togglePokemon, isLoading, error, fetchPokedex]
   );
 
   return (
@@ -74,9 +72,7 @@ export function PokedexProvider({ children, initialState }) {
 
 export function usePokedex() {
   const context = useContext(PokedexContext);
-  if (!context) {
-    throw new Error('usePokedex must be used within a PokedexProvider');
-  }
+  if (!context) throw new Error('usePokedex must be used within a PokedexProvider');
   return context;
 }
 

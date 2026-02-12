@@ -29,3 +29,14 @@ input, button, textarea, select {
 #root {
   min-height: 100vh;
 }
+
+.page-message {
+  padding: 2rem 1rem;
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .page-message {
+    padding: 3rem 1.5rem;
+  }
+}

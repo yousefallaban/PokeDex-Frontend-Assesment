@@ -15,10 +15,6 @@
   transition: color 0.2s, border-color 0.2s;
 }
 
-.link:hover {
-  color: #222;
-}
-
 .active {
   color: #e63946;
   border-bottom-color: #e63946;

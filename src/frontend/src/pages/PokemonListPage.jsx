@@ -5,32 +5,24 @@ import { mapPokemonToGrid } from '../utils/pokemon-utils';
 
 export default function PokemonListPage() {
   const { pokemon, isLoading, error } = usePokemon();
-  const { isCaught, catchPokemon, releasePokemon } = usePokedex();
+  const { isCaught, togglePokemon, isLoading: pokedexLoading } = usePokedex();
 
-  const handleToggleFavorite = (id) => {
-    if (isCaught(id)) {
-      releasePokemon(id);
-    } else {
-      catchPokemon(id);
-    }
-  };
-
-  if (isLoading) {
-    return <p>Loading...</p>;
+  if (isLoading || pokedexLoading) {
+    return <p className="page-message">Loading...</p>;
   }
 
   if (error) {
-    return <p>{error}</p>;
+    return <p className="page-message">{error}</p>;
   }
 
   if (!pokemon?.length) {
-    return <p>No Pokémon out there right now — check back soon!</p>;
+    return <p className="page-message">No Pokémon out there right now — check back soon!</p>;
   }
 
   return (
     <PokemonGrid
       pokemon={mapPokemonToGrid(pokemon, isCaught)}
-      onToggleFavorite={handleToggleFavorite}
+      onToggleFavorite={togglePokemon}
     />
   );
 }

@@ -7,21 +7,18 @@ export function usePokemon() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    let cancelled = false;
-
     async function fetchPokemon() {
       try {
         const data = await pokemonApi.getAllPokemon();
-        if (!cancelled) setPokemon(data);
+        setPokemon(data);
       } catch (err) {
-        if (!cancelled) setError(err.message);
+        setError(err.message);
       } finally {
-        if (!cancelled) setIsLoading(false);
+        setIsLoading(false);
       }
     }
 
     fetchPokemon();
-    return () => { cancelled = true; };
   }, []);
 
   return { pokemon, isLoading, error };

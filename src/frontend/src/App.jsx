@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { PokedexProvider } from './context/PokedexContext'
 import Navigation from './components/Navigation/Navigation'
 import PokemonListPage from './pages/PokemonListPage'
+import CollectionPage from './pages/CollectionPage'
 
 function App() {
   return (
@@ -10,7 +11,7 @@ function App() {
         <Navigation />
         <Routes>
           <Route path="/" element={<PokemonListPage />} />
-          <Route path="/collection" element={<div>My Collection</div>} />
+          <Route path="/collection" element={<CollectionPage />} />
         </Routes>
       </PokedexProvider>
     </BrowserRouter>
